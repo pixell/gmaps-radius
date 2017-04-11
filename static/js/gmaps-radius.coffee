@@ -1,7 +1,8 @@
 $ ->
     markers = []
 
-    map = new google.maps.Map($('#map')[0], {
+    $map = $('#map')
+    map = new google.maps.Map($map[0], {
         zoom: 10
         center: new google.maps.LatLng(51.500358, -0.125506) # London
         mapType: google.maps.MapTypeId.ROADMAP
@@ -104,7 +105,7 @@ $ ->
     google.maps.event.addListener(map, 'zoom_changed', updateURL)
     $('#unitSelector, #radiusInput').on('change', updateURL)
 
-    $(window).on('hashchange', (e) ->
+    hashChange = (e) ->
         query = (new URI()).query(true)
 
         # Set center from lat/lng
@@ -133,4 +134,9 @@ $ ->
         # Set unit from u
         if query.u?
             $('#unitSelector').val(query.u)
-    ).triggerHandler('hashchange')
+
+    $(window).on('hashchange', hashChange).triggerHandler('hashchange')
+
+    # On initial load, check if circle should be drawn.
+    query = (new URI()).query(true)
+    circleDrawHandler({latLng: map.getCenter()}) if query.lat? and query.lng?

@@ -66,9 +66,10 @@ l=h.substring(0,l.length)!==l?g(""):new g(h.substring(l.length)),l._parentURI=th
 
 (function() {
   $(function() {
-    var circleDrawHandler, clearMarkers, earthRadii, map, markers, polygonDestructionHandler, searchBox, searchInput, updateURL;
+    var $map, circleDrawHandler, clearMarkers, earthRadii, hashChange, map, markers, polygonDestructionHandler, query, searchBox, searchInput, updateURL;
     markers = [];
-    map = new google.maps.Map($('#map')[0], {
+    $map = $('#map');
+    map = new google.maps.Map($map[0], {
       zoom: 10,
       center: new google.maps.LatLng(51.500358, -0.125506),
       mapType: google.maps.MapTypeId.ROADMAP,
@@ -178,7 +179,7 @@ l=h.substring(0,l.length)!==l?g(""):new g(h.substring(l.length)),l._parentURI=th
     google.maps.event.addListener(map, 'bounds_changed', _.debounce(updateURL, 200));
     google.maps.event.addListener(map, 'zoom_changed', updateURL);
     $('#unitSelector, #radiusInput').on('change', updateURL);
-    return $(window).on('hashchange', function(e) {
+    hashChange = function(e) {
       var center, center_, newCenter, query, z;
       query = (new URI()).query(true);
       center_ = map.getCenter();
@@ -208,7 +209,14 @@ l=h.substring(0,l.length)!==l?g(""):new g(h.substring(l.length)),l._parentURI=th
       if (query.u != null) {
         return $('#unitSelector').val(query.u);
       }
-    }).triggerHandler('hashchange');
+    };
+    $(window).on('hashchange', hashChange).triggerHandler('hashchange');
+    query = (new URI()).query(true);
+    if ((query.lat != null) && (query.lng != null)) {
+      return circleDrawHandler({
+        latLng: map.getCenter()
+      });
+    }
   });
 
 }).call(this);
