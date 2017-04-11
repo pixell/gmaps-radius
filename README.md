@@ -18,3 +18,5 @@ This tool supports the following optional query parameters:
 * `z`: Default zoom level
 * `r`: Default circle radius
 * `u`: Default circle radius units
+
+If `lat` and `lng` are given on initial load, a circle will drawn. This allows sharing by copy-pasting full URL's.
